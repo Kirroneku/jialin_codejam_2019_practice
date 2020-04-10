@@ -1,75 +1,85 @@
 from collections import OrderedDict
 
-def findFoodStand(people, gridSize):
-    # allDirections = []
+def findFoodStand(directions, gridSize):
+    # 
 
-    xAdditions = OrderedDict()
-    yAdditions = OrderedDict()
+    xIndicies = [0]
+    yIndicies = [0]
+
+    xAdditions = {}
+    yAdditions = {}
     startX = 0
     startY = 0
-    for i in range(people):
-        direction = input().split()
-        x = int(direction[0])
-        y = int(direction[1])
-        facing = direction[2]
-        # allDirections.append({'x': x, 'y': y, 'Facing': facing})
+    for direction in directions:    
+        x = direction['x']
+        y = direction['y']
+        facing = direction['facing']
         if facing == 'N':
-            if(yAdditions.get((y)) == None):
-                yAdditions[(y)] = 0
             if(yAdditions.get((y+1)) == None):
                 yAdditions[(y+1)] = 0
             yAdditions[(y+1)] += 1
+            if( yIndicies.count(y+1) == 0 ):
+                yIndicies.append(y+1)
 
         elif( facing == 'S' ):            
-            if(yAdditions.get((y-1)) == None):
-                yAdditions[(y-1)] = 0
             if(yAdditions.get((y)) == None):
                 yAdditions[(y)] = 0
 
             yAdditions[(y)] -= 1
             startY += 1
-            
+            if( yIndicies.count(y) == 0 ):
+                yIndicies.append(y)
+
         elif( facing == 'E'):
-            if(xAdditions.get((x)) == None):
-                xAdditions[(x)] = 0
             if(xAdditions.get((x+1)) == None):
                 xAdditions[(x+1)] = 0
             xAdditions[(x+1)] += 1
+            if( xIndicies.count(x+1) == 0 ):
+                xIndicies.append(x+1)
 
         else:            
-            if(xAdditions.get((x-1)) == None):
-                xAdditions[(x-1)] = 0
             if(xAdditions.get((x)) == None):
                 xAdditions[(x)] = 0
 
             xAdditions[(x)] -= 1
             startX += 1
+            if( xIndicies.count(x) == 0 ):
+                xIndicies.append(x)
 
-    for k in xAdditions:
-        startX += xAdditions[k]
-        xAdditions[k] = startX
+    xIndicies.sort()
+    yIndicies.sort()
+
+    xAdditions[0] = startX
+    yAdditions[0] = startY
+    for k in xIndicies:
+        if (k != 0):
+            startX += xAdditions[k]
+            xAdditions[k] = startX
     
-    for k in yAdditions:
-        startY += yAdditions[k]   
-        yAdditions[k] = startY
+    for k in yIndicies:
+        if (k != 0):
+            startY += yAdditions[k]   
+            yAdditions[k] = startY
 
-    resetStartX = startX
-    maxPass = 0
-    maxPassCoords = [0, 0]
+    maxY = 0
+    maxYIndex = 0
 
-    if not bool(xAdditions):
-        xAdditions[0] = 0
-    if not bool(yAdditions):
-        yAdditions[0] = 0
+    maxX = 0
+    maxXIndex = 0    
 
-    for j in yAdditions:
-        for i in xAdditions:
-            totalPass = yAdditions[j] + xAdditions[i] 
-            if totalPass > maxPass:
-                maxPassCoords = [i, j]
-                maxPass = totalPass
-            
-    return maxPassCoords
+    for j in yIndicies:
+        if maxY < yAdditions[j]:
+            maxYIndex = j
+            maxY = yAdditions[j] 
+
+    for i in xIndicies:
+        if maxX < xAdditions[i]:
+            maxXIndex = i  
+            maxX = xAdditions[i] 
+    
+    # print(xAdditions)
+    # print(yAdditions)
+    return [maxXIndex, maxYIndex]
 
 def passThrough( direction, i, j):
     facing = direction['Facing']
@@ -90,9 +100,18 @@ def passThrough( direction, i, j):
 tests = int(input())
 
 for test in range(0, tests):
+    allDirections = []
+    
     args = input().split()
     people = int(args[0])
     gridSize = int(args[1])
+    for i in range( people ):
+        direction = input().split()
+        
+        x = int(direction[0])
+        y = int(direction[1])
+        facing = direction[2]
+        allDirections.append({'x': x, 'y': y, 'facing': facing})
 
-    ans = findFoodStand(people, gridSize)
+    ans = findFoodStand(allDirections, gridSize)
     print('Case #{}: {} {}'.format(test+1, ans[0], ans[1]))

@@ -11,38 +11,35 @@ def findFoodStand(people, gridSize):
         facing = direction[2]
         allDirections.append({'x': x, 'y': y, 'Facing': facing})
         if facing == 'N':
-            for j in  range(gridSize+1):
-                if j > y :
-                    yAdditions[j] += 1
+            for j in  range(y+1, gridSize+1):
+                yAdditions[j] += 1
         elif( facing == 'S' ):
-            for j in  range(gridSize+1):
-                if j < y :
-                    yAdditions[j] += 1
+            for j in range(0, y):
+                yAdditions[j] += 1
         elif( facing == 'E'):
-            for i in  range(gridSize+1):
-                if i > x :
-                    xAdditions[i] += 1
+            for i in range(x+1, gridSize+1):
+                xAdditions[i] += 1
         else:
-            for i in range(gridSize+1):
-                if i < x:
-                    xAdditions[i] += 1
+            for i in range(0, x):
+                xAdditions[i] += 1
     
-    maxPass = 0
-    maxPassCoords = [0, 0]
+    maxY = 0
+    maxYIndex = 0
+
+    maxX = 0
+    maxXIndex = 0
+    for j in range(gridSize+1):
+        if maxY < yAdditions[j]:
+            maxYIndex = j
+            maxY = yAdditions[j] 
 
     for i in range(gridSize+1):
-        for j in range(gridSize+1):
-            totalPass = 0
-            # for direction in allDirections:
-                # if( passThrough(direction, i, j) ):
-                #     totalPass += 1
-            totalPass = xAdditions[i] + yAdditions[j]
-
-            if totalPass > maxPass:
-                maxPassCoords = [i, j]
-                maxPass = totalPass
-
-    return maxPassCoords
+        if maxX < xAdditions[i]:
+            maxXIndex = i  
+            maxX = xAdditions[i] 
+    print(xAdditions)
+    print(yAdditions)
+    return [maxXIndex, maxYIndex]
 
 def passThrough( direction, i, j):
     facing = direction['Facing']

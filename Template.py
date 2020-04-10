@@ -1,6 +1,6 @@
 tests = int(input())
 
 for test in range(0, tests):
-    args = input().split
+    args = input().split()
     
-    print('Case #{}: {}')
+    print('Case #{}: {}'.format(test+1))
