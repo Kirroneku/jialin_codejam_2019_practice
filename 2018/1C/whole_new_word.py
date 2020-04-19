@@ -6,48 +6,48 @@ for test in range(0, tests):
     words = args[0]
     length = args[1]
 
-    madeUpWords = []
-
-    indexsForWords = []
-    noWord = False
-    startWords = []
+    madeUpWords = []    
+    newWord = []
     for i in range(words):
         madeUpWords.append(input())
-        indexsForWords.append(1)
-        startWords.append(i)
+    
+    indicies = []
+    for l in range(length):
+        indicies.append(0)
+        newWord.append(' ')
 
-    found = False
-    for j in startWords:
-        newWord = []
-        for index in range(length):
-            first = True
-            char = ''
-            if( index == 0):
-                first = False
-                char = madeUpWords[j][index]
-            # print(indexsForWords)
-            for i in range(len(indexsForWords)):
-                if( indexsForWords[i] == 0 ):
-                    indexsForWords[i] = 1
-                elif( first ):
-                    char = madeUpWords[i][index]
-                    first = False
-                    # print(char)
-                if( char != '' and char == madeUpWords[i][index] ):
-                    indexsForWords[i] = 0
-            if( char == ''):
-                noWord = True
+    done = False
+    foundWord = False
+    if length >= 2:
+        while True:
+            curIndex = length - 2
+            for i in range(words): 
+                indicies[length-1] = i
+                for j in range(length):
+                    newWord[j] = madeUpWords[indicies[j]][j]
+
+                if( not ''.join(newWord) in madeUpWords ):
+                    done = True
+                    break
+                
+            if( done ):
+                print('Case #{}: {}'.format(test+1, ''.join(newWord)))
+                foundWord = True
                 break
-            newWord.append(char)
 
-        # print(newWord)
-        if( not noWord and madeUpWords.count(''.join(newWord)) == 0 ):
-            found = True
-            print('Case #{}: {}'.format(test+1, ''.join(newWord)))
-            break
-        else:
-            for i in range(len(indexsForWords)):
-                indexsForWords[i] = 1
+            indicies[length-1] = 0
+            while( indicies[curIndex] == words-1 ):
+                indicies[curIndex] = 0
+                curIndex -= 1
+                
+            if( indicies[curIndex] != length-1):
+                indicies[curIndex] += 1
+                break
 
-    if not found:
+            if(curIndex == -1):
+                break
+
+
+        
+    if not foundWord :
         print('Case #{}: {}'.format(test+1, '-'))
